@@ -40,3 +40,22 @@ def sort_list(head)
   dummy_head.next
 end
 
+def sort_list(head)
+  dummy_head = ListNode.new("dummy", head)
+  curr = dummy_head.next
+  nodes = []
+
+  while curr do
+      nodes << curr
+      curr = curr.next
+  end
+
+  nodes.sort! { |node_1, node_2| node_1.val <=> node_2.val }
+
+  nodes.each_with_index do |node, idx|
+      node.next = nodes[idx + 1] if nodes[idx + 1]
+  end
+
+  nodes[-1].next = nil if nodes[-1]
+  nodes[0]
+end
