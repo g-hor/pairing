@@ -14,15 +14,28 @@ class Solution:
         # if node is already in set, return false
         # if we reach the end of the linked list, return true
 
-        visited_nodes = set()
-        current = head
+        # visited_nodes = set()
+        # current = head
 
-        while current:
-            if current in visited_nodes:
-                return True
+        # while current:
+        #     if current in visited_nodes:
+        #         return True
+        #     else:
+        #         visited_nodes.add(current)
+
+        #     current = current.next
+
+        # return False
+
+        tortoise = head
+        hare = head
+
+        while tortoise and hare:
+            if hare.next:
+                hare = hare.next.next
             else:
-                visited_nodes.add(current)
+                return False
+            tortoise = tortoise.next
 
-            current = current.next
-
-        return False
+            if tortoise is hare:
+                return True
