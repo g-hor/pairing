@@ -13,3 +13,16 @@ class Solution:
         # travel through the linked list and append new nodes to the set
         # if node is already in set, return false
         # if we reach the end of the linked list, return true
+
+        visited_nodes = set()
+        current = head
+
+        while current:
+            if current in visited_nodes:
+                return True
+            else:
+                visited_nodes.add(current)
+
+            current = current.next
+
+        return False
