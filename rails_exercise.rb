@@ -1,18 +1,3 @@
-# Background:
-# The following code works but I have intentionally introduced issues to make it inefficient.
-# UserEvents are created for every interaction a user has in the system. It stores what employer, partner and 
-# controller they were on. When there were 10 users and only a little bit of traffic, this would run quickly.
-# But now with 10,000 users and months of traffic - (millions of user events), this code would be very inefficient.
-
-# Instructions:
-# 1. Please make this code more efficient through refactoring so that it can run at a greater scale, 
-#    along with adding some comments to improve the readability.
-# 2. Please explain what the variable 'distinct_groups' will contain by the end of the execution and what
-#    this data would be useful for.
-# 3. Send the resulting file as a gist, .rb file or zip package via email to ryan@zevobenefits.com
-
-
-
 # Problems:
 # 1. All UserEvents are queried, including ones outside of the date range we desire.
 # 2. N+1 query to the database (one query to fetch users collection and 'N' additional 
@@ -21,7 +6,7 @@
 #    them at once.
 # 4. Excessive array methods that increase time and space complexity
 
-# My solutions:
+# My approach:
 # 1. Filter UserEvents by 'created_at' date range in the database rather than fetching 
 #    all data and filtering using Ruby.
 # 2. Eagerly load UserEvents by prefetching data using ::includes method
@@ -32,8 +17,7 @@
 #    and filtering directly in the database
 
 
-
-# Identify date range for data we desire
+# Identify date range for data we desire (in this case, the current month)
 start_range = Date.today.beginning_of_month
 end_range = Date.today.end_of_month
 
@@ -85,6 +69,17 @@ User
     total_time: total_time
   }
 end
+
+# With my refactored code, 'distinct_groups' will contain usernames for keys. The values will be nested hash
+# maps that contain the groups (in Array format) and 'total_time'. This information can be very useful for 
+# tracking user engagement. 
+# - If activities are expected to be relatively long (>= 10 min), the 'total_time' could be an indicator of 
+#   how much time was spent using our system.
+# - If activities are expected to be less than 10 min apart, then the 'total_time' indicates lapses in engagement.
+# - We know which employers and partners the User interacted with the most, but using an Array data structure
+#   also affords us a sense of progression, which may be useful in analyzing trends in navigation within our system.
+# - Storing 'controller_resources' is useful for analyzing a User's interests. If this system is being used to 
+#   track employee workflow, this can also be used to monitor proper performance. 
 
 
 # Additional considerations:
